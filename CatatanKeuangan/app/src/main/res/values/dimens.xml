@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="size_text_input_lg">30sp</dimen>
+    <dimen name="size_text_input_md">24sp</dimen>
+    <dimen name="size_text_input_sm">18sp</dimen>
+    <dimen name="size_padding">4dp</dimen>
+    <dimen name="size_width_image_sm">30dp</dimen>
+</resources>

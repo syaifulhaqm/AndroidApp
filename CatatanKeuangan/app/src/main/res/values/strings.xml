@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Catatan Keuangan</string>
+    <string name="title_activity_buat_catatan">BuatCatatanActivity</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_outcome">Pengeluaran</string>
+    <string name="action_income">Pemasukan</string>
+
+    <string name="label_outcome">Pengeluaran</string>
+    <string name="label_income">Pemasukkan</string>
+    <string name="label_type_come">Pengeluaran/Pemasukkan</string>
+    <string name="label_date">Tanggal</string>
+
+    <string name="input_amount">Nominal</string>
+    <string name="input_description">Deskripsi</string>
+
+    <string name="button_save">Simpan</string>
+
+    <string name="default_value_amount">0</string>
+    <string name="content_description_type_come">Jenis aliran keuangan</string>
+</resources>

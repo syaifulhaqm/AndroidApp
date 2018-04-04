@@ -1,7 +1,6 @@
 package com.example.catatankeuangan
 
 import android.content.Intent
-import android.database.Cursor
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -11,7 +10,6 @@ import com.example.catatankeuangan.dao.NotesDao
 import com.example.catatankeuangan.view.ListAdapterNotes
 
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,8 +23,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val notesDao = NotesDao(this)
         val listView = findViewById<ListView>(R.id.list_notes)
-        val customAdapter = ListAdapterNotes(this, R.layout.item_list_notes)
+        val customAdapter = ListAdapterNotes(this, R.layout.item_list_notes, notesDao.listAllNotes())
+        listView.adapter = customAdapter
 
     }
 
@@ -48,17 +48,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun loadNotesAdapter(cursor: Cursor){
-        val from = listOf("item_list_amount", "item_list_date", "item_list_type_outcome", "item_list_type_income")
-        val to = listOf(R.id.item_list_amount, R.id.item_list_date, R.id.item_list_type_outcome, R.id.item_list_type_income)
-        var fillMaps = ArrayList<HashMap<String, Any>>()
-        var map = HashMap<String, Any>()
-
-        cursor.moveToFirst()
-        while (!cursor.isAfterLast){
-            var note = NotesDao.cursorToNotes(cursor)
-            map.put(from[0], note.amount)
-            map.put(from[1], note.date)
-        }
-    }
 }

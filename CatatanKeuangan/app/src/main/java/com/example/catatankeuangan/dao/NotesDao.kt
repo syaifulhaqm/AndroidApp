@@ -19,7 +19,6 @@ class NotesDao constructor(context: Context){
                 NOTES_COLUMN_ID, NOTES_COLUMN_AMOUNT, NOTES_COLUMN_TYPE, NOTES_COLUMN_DATE, NOTES_COLUMN_DESCRIPTION
         )
 
-        fun cursorToNotes(cursor: Cursor):Notes = cursorToNotes(cursor)
     }
 
     private val createTableNotes = """
@@ -33,8 +32,8 @@ class NotesDao constructor(context: Context){
     """
     private val dropTableNotes = """DROP TABLE IF EXISTS $NOTES_TABLE_NAME"""
 
-    var db:SQLiteDatabase
-    val  dbHelper = DataHelper(context, createTableNotes, dropTableNotes)
+    private var db:SQLiteDatabase
+    private val  dbHelper = DataHelper(context, createTableNotes, dropTableNotes)
 
     init {
        db = dbHelper.readableDatabase
@@ -50,20 +49,26 @@ class NotesDao constructor(context: Context){
         value.put(NOTES_COLUMN_DATE, notes.date)
         value.put(NOTES_COLUMN_DESCRIPTION, notes.description)
         db.insert(NOTES_TABLE_NAME, null,value)
+        db.close()
         Log.d("INSERT","Sukses menyimpan")
         return true
     }
 
-    fun listAllNotes(){
+    fun listAllNotes():List<Notes>{
         db = dbHelper.readableDatabase
         // SELECT ALL SQL QUERY
-        val cursor:Cursor = db.query(NOTES_TABLE_NAME, notesAllColumn)
+        val cursor = db.query(NOTES_TABLE_NAME, notesAllColumn.toTypedArray(),null,null,null,null,null)
+        val listNotes: ArrayList<Notes> = ArrayList()
         cursor.moveToFirst()
-
-
+        while (!cursor.isAfterLast){
+            listNotes.add(cursorToNotes(cursor))
+            cursor.moveToNext()
+        }
+        cursor.close()
+        return listNotes
     }
 
-    fun cursorToNotes(cursor: Cursor): Notes {
+    private fun cursorToNotes(cursor: Cursor): Notes {
         return Notes(cursor.getLong(0),
                 cursor.getDouble(1),
                 cursor.getString(2),

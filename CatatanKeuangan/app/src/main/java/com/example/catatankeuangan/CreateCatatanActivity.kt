@@ -11,9 +11,12 @@ import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import com.example.catatankeuangan.dao.NotesDao
+import com.example.catatankeuangan.enumeration.ModeAction
 import com.example.catatankeuangan.enumeration.TypeCome
 import com.example.catatankeuangan.model.Notes
 import kotlinx.android.synthetic.main.activity_create_catatan.*
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,10 +26,7 @@ class CreateCatatanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_catatan)
 
-        val amount = findViewById<EditText>(R.id.amount)
-        val date = findViewById<TextView>(R.id.date)
         updateLabel(date, Calendar.getInstance())
-
         val calendar = Calendar.getInstance()
         val dateDialog = DatePickerDialog.OnDateSetListener(function = { view, year, month, dayOfMonth ->
             calendar.set(Calendar.YEAR, year)
@@ -34,6 +34,11 @@ class CreateCatatanActivity : AppCompatActivity() {
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
             updateLabel(date,calendar)
         })
+
+        val item:Notes? = intent.getParcelableExtra<Notes>("item")
+        val mode:String? = intent.getStringExtra("mode")
+        item?.let { setFormNotes(item) }
+        mode?.let { Log.d("MODE", mode) }
 
         date.setOnClickListener {
             DatePickerDialog(this,
@@ -46,8 +51,8 @@ class CreateCatatanActivity : AppCompatActivity() {
         val notesDao = NotesDao(this)
         save.setOnClickListener {
             Log.d("SAVE","Sedang Menyimpan..")
-            val description = findViewById<EditText>(R.id.description).text.toString()
-            val outcome = findViewById<RadioButton>(R.id.outcome)
+            val description = description.text.toString()
+            val outcome = outcome
             val typeCome = if (outcome.isChecked) TypeCome.OUT.name else TypeCome.IN.name
 
             val notes = Notes(
@@ -60,11 +65,23 @@ class CreateCatatanActivity : AppCompatActivity() {
 
             Toast.makeText(applicationContext, "Sedang menyimpan..."  + notes.toString(), Toast.LENGTH_LONG)
                     .show()
-            if (notesDao.insertNotes(notes)){
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+            when(mode){
+                ModeAction.CREATE.name -> {
+                    if (notesDao.insertNotes(notes)){
+                        startActivity(intentFor<MainActivity>())
+                        toast("Data berhasil disimpan")
+                    }
+                }
+                ModeAction.EDIT.name -> {
+                    if (item is Notes) {
+                        notes.id = item.id
+                        if(notesDao.updateNotes(notes)){
+                            startActivity(intentFor<MainActivity>())
+                            toast("Data berhasil diupdate")
+                        }
+                    }
+                }
             }
-
         }
     }
 
@@ -72,5 +89,15 @@ class CreateCatatanActivity : AppCompatActivity() {
     private fun updateLabel(textView: TextView, calendar: Calendar){
         val sdf = SimpleDateFormat("dd-MM-yyyy")
         textView.text = sdf.format(calendar.time)
+    }
+
+    private fun setFormNotes(notes: Notes){
+        amount.setText(String.format("%.2f", notes.amount))
+        description.setText(notes.description)
+        date.text = notes.date
+        when(notes.typeCome){
+            TypeCome.OUT.name -> typeCome.check(R.id.outcome)
+            TypeCome.IN.name -> typeCome.check(R.id.income)
+        }
     }
 }

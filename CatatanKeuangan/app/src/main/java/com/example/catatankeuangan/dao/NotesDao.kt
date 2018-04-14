@@ -54,10 +54,42 @@ class NotesDao constructor(context: Context){
         return true
     }
 
-    fun listAllNotes():List<Notes>{
+    fun updateNotes(notes:Notes):Boolean{
+        db = dbHelper.writableDatabase
+        Log.d("UPDATE", notes.toString())
+
+        val value = ContentValues()
+        value.put(NOTES_COLUMN_ID, notes.id)
+        value.put(NOTES_COLUMN_AMOUNT, notes.amount)
+        value.put(NOTES_COLUMN_TYPE, notes.typeCome)
+        value.put(NOTES_COLUMN_DATE, notes.date)
+        value.put(NOTES_COLUMN_DESCRIPTION, notes.description)
+
+        db.update(NOTES_TABLE_NAME,value,"$NOTES_COLUMN_ID=${notes.id}",null)
+        db.close()
+        Log.d("UPDATE","Sukses mengupdate")
+        return true
+    }
+
+    fun deleteNotes(notes:Notes):Boolean{
+        db = dbHelper.writableDatabase
+        Log.d("DELETE", notes.toString())
+        db.delete(NOTES_TABLE_NAME,"$NOTES_COLUMN_ID=${notes.id}",null)
+        db.close()
+        Log.d("DELETE","Sukses menghapus")
+        return true
+    }
+
+    fun listAllNotes(typeCome:String? = null):List<Notes>{
         db = dbHelper.readableDatabase
         // SELECT ALL SQL QUERY
-        val cursor = db.query(NOTES_TABLE_NAME, notesAllColumn.toTypedArray(),null,null,null,null,null)
+        var selection:String? = null
+        var selectionArgs:Array<String>? = null
+        typeCome?.let {
+            selection = "$NOTES_COLUMN_TYPE = ?"
+            selectionArgs = Array<String>(1){typeCome}
+        }
+        val cursor = db.query(NOTES_TABLE_NAME, notesAllColumn.toTypedArray(),selection,selectionArgs,null,null,"$NOTES_COLUMN_ID DESC")
         val listNotes: ArrayList<Notes> = ArrayList()
         cursor.moveToFirst()
         while (!cursor.isAfterLast){

@@ -4,7 +4,13 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="size_text_input_lg">30sp</dimen>
     <dimen name="size_text_input_md">24sp</dimen>
+    <dimen name="size_text_input_smd">21sp</dimen>
     <dimen name="size_text_input_sm">18sp</dimen>
     <dimen name="size_padding">4dp</dimen>
     <dimen name="size_width_image_sm">30dp</dimen>
+    <dimen name="size_image_30">30dp</dimen>
+    <dimen name="size_image_15">15dp</dimen>
+    <dimen name="size_image_typecome">50dp</dimen>
+    <dimen name="size_image_typecome_half">25dp</dimen>
+    <dimen name="size_margin">8dp</dimen>
 </resources>

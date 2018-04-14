@@ -9,6 +9,11 @@
 
     <ListView
         android:id="@+id/list_notes"
+        style="@style/Widget.AppCompat.Light.ListView.DropDown"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/cardview_light_background"
+        android:divider="@color/cardview_shadow_start_color"
+        android:dividerHeight="@dimen/cardview_compat_inset_shadow"
+        android:scrollbars="vertical" />
 </android.support.constraint.ConstraintLayout>
